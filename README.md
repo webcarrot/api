@@ -227,13 +227,8 @@ const api = makeApi<ApiData>({
   }
 });
 
-declare var APP_STATE: { hiFromServer: string };
-
-const hiFromServer =
-  (typeof APP_STATE !== "undefined" && APP_STATE.hiFromServer) || "";
-
 ReactDOM.hydrate(
-  React.createElement(App, { api, hiFromServer }),
+  React.createElement(App, { api, hiFromServer: "" }),
   document.getElementById("app")
 );
 ```
