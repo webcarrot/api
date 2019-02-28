@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ApiResolver, ApiData } from "./types";
+import { ApiResolver, ApiData } from "./index";
 
 const defaultValue = () => Promise.reject();
 

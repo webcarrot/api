@@ -6,7 +6,7 @@ Tiny, isomorphic TypeScript framework to build "call action" APIs.
 
 `npm i @webcarrot/api`
 
-## Example usage
+## Example code
 
 See https://github.com/webcarrot/api/tree/master/example
 
@@ -39,7 +39,7 @@ export const actions = {
 };
 ```
 
-### Some definitions files (`example/types.d.ts`)
+#### Some definitions files (`example/types.d.ts`)
 
 ```typescript
 import { ApiResolver } from "@webcarrot/api";

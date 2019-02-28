@@ -1,4 +1,4 @@
-import { ApiResolver, ApiData } from "./types";
+import { ApiResolver, ApiData } from "./index";
 
 export const makeApi = <Data extends ApiData, Context>({
   actions,

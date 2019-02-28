@@ -2,8 +2,8 @@
   "name": "@webcarrot/api",
   "version": "1.0.0",
   "description": "Framework that provide minimal API support",
-  "main": "cjs/index",
-  "module": "esm/index",
+  "main": "cjs",
+  "module": "esm",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/webcarrot/api.git"
@@ -13,10 +13,9 @@
     "typescript"
   ],
   "scripts": {
-    "make:mjs": "cp ./esm/index.js ./esm/index.mjs",
-    "build:esm": "tsc --sourceMap -d -t es6 --outDir ./esm ./index.ts",
-    "build:cjs": "tsc --sourceMap -d -t es5 --lib es6 --outDir ./cjs ./index.ts",
-    "build": "npm run build:esm && npm run build:cjs && npm run make:mjs"
+    "build:esm": "tsc --sourceMap -d -t es6 --outDir ./esm",
+    "build:cjs": "tsc --sourceMap -d -t es5 --outDir ./cjs",
+    "build": "npm run build:esm && npm run build:cjs"
   },
   "author": {
     "email": "admin@webcarrot.pl",
@@ -34,6 +33,7 @@
     "@types/co-body": "0.0.3",
     "@types/koa": "^2.0.48",
     "@types/react": "^16.8.5",
-    "@types/react-dom": "^16.8.2"
+    "@types/react-dom": "^16.8.2",
+    "csstype": "^2.6.2"
   }
 }

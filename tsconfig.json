@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./",
+    "noImplicitAny": true,
+    "removeComments": false,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "module": "esnext",
+    "moduleResolution": "node"
+  },
+  "exclude": ["./example/**/*"],
+  "esModuleInterop": true,
+  "allowSyntheticDefaultImports": true
+}
