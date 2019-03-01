@@ -23,7 +23,7 @@ export const makeApi = <Data extends ApiData>({
   return (action, payload) =>
     fetch(endpoint, {
       method: "POST",
-      headers,
+      headers: fetchHeaders,
       body: JSON.stringify({
         action,
         payload
