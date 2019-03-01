@@ -6,13 +6,16 @@ const IUseApi = ({ value = "" }) => {
   const api = React.useContext(ApiContext);
   const [hi, setHi] = React.useState(value);
   return (
-    <a
-      onClick={() =>
-        api("say.hi", { who: "React" }).then(({ hi }) => setHi(hi))
-      }
-    >
-      Hi: ${hi}
-    </a>
+    <p>
+      Last message: <strong>{hi}</strong>
+      <button
+        onClick={() =>
+          api("say.hi", { who: "browser-react" }).then(({ hi }) => setHi(hi))
+        }
+      >
+        say hi
+      </button>
+    </p>
   );
 };
 

@@ -27,13 +27,13 @@ export const handler = async (context: KoaContext) => {
     <title></title>
   </head>
   <body>
-    <script>APP_STATE=${JSON.stringify(APP_STATE)};</script>
-    <script src="/build/react.js"></script>
     <div id="app">${ReactDOM.renderToString(
       React.createElement(App, {
         api
       })
     )}</div>
+    <script>APP_STATE=${JSON.stringify(APP_STATE)};</script>
+    <script src="/build/react.js" async defer></script>
   </body>
 </html>`;
 };

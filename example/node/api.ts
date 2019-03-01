@@ -11,7 +11,7 @@ export const handler = async (
 ) => {
   if (context.method === "POST" && context.path === "/api") {
     try {
-      if (context.headers["X-Secret-Foo"] !== "Bar") {
+      if (context.header["x-secret-foo"] !== "Bar") {
         throw new Error("Invalid secret header");
       }
       const api = makeApi<ApiData, KoaContext>({
@@ -33,7 +33,7 @@ export const handler = async (
       context.type = "json";
       context.status = err.status || 500;
       context.body = JSON.stringify({
-        code: err.code,
+        code: err.code || err.status || 500,
         message: err.message
       });
     }

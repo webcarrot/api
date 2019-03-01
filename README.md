@@ -22,6 +22,14 @@ import { actions } from "./api";
 
 export type ApiData = typeof actions;
 export type ApiContextValue = ApiResolver<ApiData>;
+
+export type AppState = {
+  api: {
+    endpoint: string;
+    headers: HeadersInit;
+  };
+  hi: string;
+};
 ```
 
 ### Node only side
@@ -36,7 +44,9 @@ export const action: ActionFunction<
   { who: string },
   { hi: string },
   KoaContext
-> = async ({ who }, ctx) => ({ hi: `Hi ${who} from ip: ${ctx.ip}` });
+> = async ({ who }, ctx) => ({
+  hi: `Hi ${who} from ip: ${ctx.ip}, date: ${new Date().toLocaleString()}`
+});
 ```
 
 #### Actions list (`example/api/index.ts`)
@@ -61,12 +71,12 @@ export const handler = async (
   context: KoaContext,
   next: () => Promise<void>
 ) => {
-  if (context.path === "/pain") {
+  if (context.path === "/plain") {
     const api = makeApi<ApiData, KoaContext>({
       actions,
       context
     });
-    context.body = (await api("say.hi", { who: "anonymus" })).hi;
+    context.body = (await api("say.hi", { who: "plain-node" })).hi;
   } else {
     return next();
   }
@@ -89,6 +99,9 @@ export const handler = async (
 ) => {
   if (context.method === "POST" && context.path === "/api") {
     try {
+      if (context.header["x-secret-foo"] !== "Bar") {
+        throw new Error("Invalid secret header");
+      }
       const api = makeApi<ApiData, KoaContext>({
         actions,
         context
@@ -108,7 +121,7 @@ export const handler = async (
       context.type = "json";
       context.status = err.status || 500;
       context.body = JSON.stringify({
-        code: err.code,
+        code: err.code || err.status || 500,
         message: err.message
       });
     }
@@ -127,13 +140,13 @@ import { makeApi } from "@webcarrot/api/browser";
 import { ApiData } from "../types";
 
 const api = makeApi<ApiData>({
-  apiEndpoint: "/api",
-  apiHeaders: {
-    "X-Foo": "Bar"
+  endpoint: "/api",
+  headers: {
+    "X-Secret-Foo": "Bar"
   }
 });
 
-(async () => console.log((await api("say.hi", { who: "anonymus" })).hi))();
+(async () => console.log((await api("say.hi", { who: "plain-browser" })).hi))();
 ```
 
 ### React
@@ -147,7 +160,7 @@ import { ApiData } from "./types";
 export const Context = makeContext<ApiData>();
 ```
 
-#### Some usage (`example/app.tsx`)
+#### App (`example/app.tsx`)
 
 ```typescript
 import * as React from "react";
@@ -158,13 +171,16 @@ const IUseApi = ({ value = "" }) => {
   const api = React.useContext(ApiContext);
   const [hi, setHi] = React.useState(value);
   return (
-    <a
-      onClick={() =>
-        api("say.hi", { who: "React" }).then(({ hi }) => setHi(hi))
-      }
-    >
-      Hi: ${hi}
-    </a>
+    <p>
+      Last message: <strong>{hi}</strong>
+      <button
+        onClick={() =>
+          api("say.hi", { who: "browser-react" }).then(({ hi }) => setHi(hi))
+        }
+      >
+        say hi
+      </button>
+    </p>
   );
 };
 
@@ -195,18 +211,37 @@ import { makeApi } from "@webcarrot/api/node";
 
 import { actions } from "../api";
 import { App } from "../app";
-import { ApiData } from "../types";
+import { ApiData, AppState } from "../types";
 
 export const handler = async (context: KoaContext) => {
   const api = makeApi<ApiData, KoaContext>({
     actions,
     context
   });
-  context.body = ReactDOM.renderToString(
-    React.createElement(App, {
-      api
-    })
-  );
+  const APP_STATE: AppState = {
+    api: {
+      endpoint: "/api",
+      headers: {
+        "X-Secret-Foo": "Bar"
+      }
+    },
+    hi: (await api("say.hi", { who: "react-node" })).hi
+  };
+  context.body = `<!doctype html>
+<html>
+  <head>
+    <title></title>
+  </head>
+  <body>
+    <div id="app">${ReactDOM.renderToString(
+      React.createElement(App, {
+        api
+      })
+    )}</div>
+    <script>APP_STATE=${JSON.stringify(APP_STATE)};</script>
+    <script src="/build/react.js" async defer></script>
+  </body>
+</html>`;
 };
 ```
 
@@ -218,18 +253,16 @@ Render react app in browser (`example/browser/react.ts`)
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { makeApi } from "@webcarrot/api/browser";
-import { ApiData } from "../types";
+import { ApiData, AppState } from "../types";
 import { App } from "../app";
 
-const api = makeApi<ApiData>({
-  apiEndpoint: "/api",
-  apiHeaders: {
-    "X-Foo": "Bar"
-  }
-});
+declare var APP_STATE: AppState;
+const appState = APP_STATE;
+
+const api = makeApi<ApiData>(appState.api);
 
 ReactDOM.hydrate(
-  React.createElement(App, { api, hiFromServer: "" }),
+  React.createElement(App, { api, hiFromServer: appState.hi }),
   document.getElementById("app")
 );
 ```
