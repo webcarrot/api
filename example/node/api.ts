@@ -11,6 +11,9 @@ export const handler = async (
 ) => {
   if (context.method === "POST" && context.path === "/api") {
     try {
+      if (context.headers["X-Secret-Foo"] !== "Bar") {
+        throw new Error("Invalid secret header");
+      }
       const api = makeApi<ApiData, KoaContext>({
         actions,
         context

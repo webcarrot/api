@@ -15,11 +15,7 @@ type Output<T extends ActionFunction> = T extends (p: any, c: any) => infer R
 
 export type ApiData = { [key: string]: ActionFunction };
 
-export type ApiResolver<D extends ApiData> = <
-  N extends keyof D,
-  P = Payload<D[N]>,
-  O = Unpacked<Output<D[N]>>
->(
+export type ApiResolver<D extends ApiData> = <N extends keyof D>(
   name: N,
-  payload: P
-) => Promise<O>;
+  payload: Payload<D[N]>
+) => Promise<Unpacked<Output<D[N]>>>;

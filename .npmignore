@@ -1,2 +1,7 @@
 example
 node_modules
+browser.ts
+context.ts
+index.ts
+node.ts
+tsconfig.*

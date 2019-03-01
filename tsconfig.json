@@ -1,12 +1,17 @@
 {
   "compilerOptions": {
-    "baseUrl": "./",
+    "baseUrl": ".",
+    "outDir": "./",
+    "sourceMap": true,
+    "declaration": true,
     "noImplicitAny": true,
-    "removeComments": false,
+    "removeComments": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "module": "esnext",
-    "moduleResolution": "node"
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "target": "es2017",
+    "lib": ["es7", "es2017", "dom"]
   },
   "exclude": ["./example/**/*"],
   "esModuleInterop": true,

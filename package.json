@@ -1,9 +1,13 @@
 {
   "name": "@webcarrot/api",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Framework that provide minimal API support",
-  "main": "cjs",
-  "module": "esm",
+  "browser": {
+    "./browser.js": "./browser/browser.js",
+    "./context.js": "./browser/context.js",
+    "./index.js": "./browser/index.js",
+    "./node.js": false
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/webcarrot/api.git"
@@ -13,9 +17,8 @@
     "typescript"
   ],
   "scripts": {
-    "build:esm": "tsc --sourceMap -d -t es6 --outDir ./esm",
-    "build:cjs": "tsc --sourceMap -d -t es5 --outDir ./cjs",
-    "build": "npm run build:esm && npm run build:cjs"
+    "clean": "rm -rf *.js *.js.map *.d.ts browser",
+    "build": "npm run clean && tsc && tsc --build tsconfig.browser.json"
   },
   "author": {
     "email": "admin@webcarrot.pl",
@@ -30,10 +33,7 @@
     "registry": "https://registry.npmjs.org"
   },
   "devDependencies": {
-    "@types/co-body": "0.0.3",
-    "@types/koa": "^2.0.48",
     "@types/react": "^16.8.5",
-    "@types/react-dom": "^16.8.2",
     "csstype": "^2.6.2"
   }
 }

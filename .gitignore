@@ -1,3 +1,5 @@
 node_modules
-cjs
-esm
+browser
+*.js
+*.js.map
+*.d.ts

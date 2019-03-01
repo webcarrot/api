@@ -2,9 +2,9 @@ import { makeApi } from "@webcarrot/api/browser";
 import { ApiData } from "../types";
 
 const api = makeApi<ApiData>({
-  apiEndpoint: "/api",
-  apiHeaders: {
-    "X-Foo": "Bar"
+  endpoint: "/api",
+  headers: {
+    "X-Secret-Foo": "Bar"
   }
 });
 

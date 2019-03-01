@@ -5,16 +5,35 @@ import { makeApi } from "@webcarrot/api/node";
 
 import { actions } from "../api";
 import { App } from "../app";
-import { ApiData } from "../types";
+import { ApiData, AppState } from "../types";
 
 export const handler = async (context: KoaContext) => {
   const api = makeApi<ApiData, KoaContext>({
     actions,
     context
   });
-  context.body = ReactDOM.renderToString(
-    React.createElement(App, {
-      api
-    })
-  );
+  const APP_STATE: AppState = {
+    api: {
+      endpoint: "/api",
+      headers: {
+        "X-Secret-Foo": "Bar"
+      }
+    },
+    hi: (await api("say.hi", { who: "react-node" })).hi
+  };
+  context.body = `<!doctype html>
+<html>
+  <head>
+    <title></title>
+  </head>
+  <body>
+    <script>APP_STATE=${JSON.stringify(APP_STATE)};</script>
+    <script src="/build/react.js"></script>
+    <div id="app">${ReactDOM.renderToString(
+      React.createElement(App, {
+        api
+      })
+    )}</div>
+  </body>
+</html>`;
 };

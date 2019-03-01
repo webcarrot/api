@@ -1,0 +1,28 @@
+{
+  "public": false,
+  "scripts": {
+    "clean": "rm -rf build",
+    "build:node": "tsc",
+    "build:browser": "tsc --build tsconfig.browser.json",
+    "build": "npm run clean && npm run build:node && npm run build:browser",
+    "start": "npm run build && node ./build/node/index.js"
+  },
+  "author": {
+    "email": "admin@webcarrot.pl",
+    "name": "webcarrot"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "co-body": "^6.0.0",
+    "koa": "^2.7.0",
+    "react": "^16.8.3",
+    "react-dom": "^16.8.3"
+  },
+  "devDependencies": {
+    "@types/co-body": "0.0.3",
+    "@types/koa": "^2.0.48",
+    "@types/react": "^16.8.5",
+    "@types/react-dom": "^16.8.2",
+    "csstype": "^2.6.2"
+  }
+}

@@ -1,27 +1,27 @@
 import { ApiResolver, ApiData } from "./index";
 
 export const makeApi = <Data extends ApiData>({
-  apiEndpoint,
-  apiHeaders
+  endpoint,
+  headers
 }: {
-  apiEndpoint: string;
-  apiHeaders?: HeadersInit;
+  endpoint: string;
+  headers?: HeadersInit;
 }): ApiResolver<Data> => {
-  const headers: Headers = new Headers({
+  const fetchHeaders: Headers = new Headers({
     Accept: "application/json",
     "Content-Type": "application/json"
   });
-  if (apiHeaders) {
-    if (apiHeaders instanceof Headers) {
-      apiHeaders.forEach((value, key) => headers.set(key, value));
-    } else if (apiHeaders instanceof Array) {
-      apiHeaders.forEach(([key, value]) => headers.set(key, value));
-    } else if (apiHeaders instanceof Object) {
-      Object.keys(apiHeaders).forEach(key => headers.set(key, apiHeaders[key]));
+  if (headers) {
+    if (headers instanceof Headers) {
+      headers.forEach((value, key) => fetchHeaders.set(key, value));
+    } else if (headers instanceof Array) {
+      headers.forEach(([key, value]) => fetchHeaders.set(key, value));
+    } else if (headers instanceof Object) {
+      Object.keys(headers).forEach(key => fetchHeaders.set(key, headers[key]));
     }
   }
   return (action, payload) =>
-    fetch(apiEndpoint, {
+    fetch(endpoint, {
       method: "POST",
       headers,
       body: JSON.stringify({

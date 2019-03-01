@@ -1,22 +1,20 @@
 {
   "compilerOptions": {
-    "baseUrl": "../",
-    "paths": {
-      "@webcarrot/api": ["index"],
-      "@webcarrot/api/*": ["*"]
-    },
+    "baseUrl": ".",
+    "outDir": "./build",
+    "sourceMap": false,
+    "declaration": false,
     "noImplicitAny": true,
-    "removeComments": false,
+    "removeComments": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "module": "esnext",
+    "module": "commonjs",
     "moduleResolution": "node",
-    "target": "esnext",
-    "lib": ["es7", "es2017", "dom"],
+    "target": "es2017",
     "jsx": "react",
-    "typeRoots": ["node_modules/@types", "types"]
+    "lib": ["es7", "es2017", "dom"]
   },
-  "exclude": ["./example/**/*"],
+  "exclude": ["./browser/**/*"],
   "esModuleInterop": true,
   "allowSyntheticDefaultImports": true
 }

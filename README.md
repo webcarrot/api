@@ -8,13 +8,23 @@ Tiny, isomorphic TypeScript framework to build "call action" APIs.
 
 ## Example code
 
-See https://github.com/webcarrot/api/tree/master/example
+See [example](https://github.com/webcarrot/api/tree/master/example)
 
 Anyway same code:
 
 Koa is used as context for API actions - use anything you want or nothing...
 
-### Node side
+### Some types file (`example/types.d.ts`)
+
+```typescript
+import { ApiResolver } from "@webcarrot/api";
+import { actions } from "./api";
+
+export type ApiData = typeof actions;
+export type ApiContextValue = ApiResolver<ApiData>;
+```
+
+### Node only side
 
 #### Hi action (`example/api/hi.ts`):
 
@@ -39,29 +49,20 @@ export const actions = {
 };
 ```
 
-#### Some definitions files (`example/types.d.ts`)
-
-```typescript
-import { ApiResolver } from "@webcarrot/api";
-import { actions } from "./api";
-
-export type ApiData = typeof actions;
-export type ApiContextValue = ApiResolver<ApiData>;
-```
-
 #### Call action from koa handler (`example/node/plain.ts`)
 
 ```typescript
 import { Context as KoaContext } from "koa";
 import { makeApi } from "@webcarrot/api/node";
 import { actions } from "../api";
+import { ApiData } from "../types";
 
 export const handler = async (
   context: KoaContext,
   next: () => Promise<void>
 ) => {
   if (context.path === "/pain") {
-    const api = makeApi<typeof actions, KoaContext>({
+    const api = makeApi<ApiData, KoaContext>({
       actions,
       context
     });
