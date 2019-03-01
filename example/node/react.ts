@@ -12,6 +12,7 @@ export const handler = async (context: KoaContext) => {
     actions,
     context
   });
+  const hi = (await api("say.hi", { who: "react-node" })).hi;
   const APP_STATE: AppState = {
     api: {
       endpoint: "/api",
@@ -19,17 +20,18 @@ export const handler = async (context: KoaContext) => {
         "X-Secret-Foo": "Bar"
       }
     },
-    hi: (await api("say.hi", { who: "react-node" })).hi
+    hi
   };
   context.body = `<!doctype html>
 <html>
   <head>
-    <title></title>
+    <title>Example</title>
   </head>
   <body>
     <div id="app">${ReactDOM.renderToString(
       React.createElement(App, {
-        api
+        api,
+        hiFromServer: hi
       })
     )}</div>
     <script>APP_STATE=${JSON.stringify(APP_STATE)};</script>

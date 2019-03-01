@@ -10,7 +10,7 @@ const IUseApi = ({ value = "" }) => {
       Last message: <strong>{hi}</strong>
       <button
         onClick={() =>
-          api("say.hi", { who: "browser-react" }).then(({ hi }) => setHi(hi))
+          api("say.hi", { who: "react-browser" }).then(({ hi }) => setHi(hi))
         }
       >
         say hi
