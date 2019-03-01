@@ -15,7 +15,10 @@
   },
   "keywords": [
     "api",
-    "typescript"
+    "typescript",
+    "microframework",
+    "react",
+    "isomorphic"
   ],
   "scripts": {
     "clean": "rm -rf *.js *.js.map *.d.ts browser",
