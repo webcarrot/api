@@ -1,4 +1,5 @@
 import { ApiResolver, ApiData } from "@webcarrot/api";
+import { makeAbortError, makeError } from "./errors";
 
 export const makeApi = <Data extends ApiData>({
   endpoint,
@@ -22,6 +23,7 @@ export const makeApi = <Data extends ApiData>({
   }
   return (action, payload) => {
     try {
+      let aborted = false;
       const controller = new AbortController();
       const signal = controller.signal;
       const promise = fetch(endpoint, {
@@ -32,13 +34,30 @@ export const makeApi = <Data extends ApiData>({
           action,
           payload
         })
-      }).then(r => r.json());
+      }).then(
+        r =>
+          r.json().then(data => {
+            if (aborted) {
+              throw makeAbortError(action);
+            } else if (r.ok) {
+              return data;
+            } else {
+              throw makeError(data, action);
+            }
+          }),
+        err => {
+          throw makeError(err, action);
+        }
+      );
       Object.defineProperty(promise, "abort", {
-        value: () => controller.abort()
+        value: () => {
+          aborted = true;
+          controller.abort();
+        }
       });
       return promise;
     } catch (err) {
-      return Promise.reject(err);
+      return Promise.reject(makeError(err, action));
     }
   };
 };

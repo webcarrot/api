@@ -7,11 +7,7 @@ import {
   Output
 } from "@webcarrot/api";
 
-const makeError = () => {
-  const error = new Error("Action aborted");
-  error.name === "AbortError";
-  return error;
-};
+import { makeAbortError, makeError } from "./errors";
 
 export const makeApi = <Data extends ApiData, Context>({
   actions,
@@ -26,20 +22,28 @@ export const makeApi = <Data extends ApiData, Context>({
   let aborted = false;
   const promise = new Promise<Unpacked<Output<Data[N]>>>((resolve, reject) => {
     if (aborted) {
-      reject(makeError());
+      reject(makeAbortError(action));
     } else if (action in actions) {
       actions[action](payload, context).then(
         data => {
           if (!aborted) {
             resolve(data);
           } else {
-            reject(makeError());
+            reject(makeAbortError(action));
           }
         },
-        err => reject(aborted ? makeError() : err)
+        err => reject(aborted ? makeAbortError(action) : makeError(err, action))
       );
     } else {
-      reject(new Error(`Unknown action ${action}`));
+      reject(
+        makeError(
+          {
+            message: `Unknown action "${action}"`,
+            name: "ActionUnknown"
+          },
+          action
+        )
+      );
     }
   });
   Object.defineProperty(promise, "abort", {

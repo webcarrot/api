@@ -33,7 +33,7 @@ export const handler = async (
       context.type = "json";
       context.status = err.status || 500;
       context.body = JSON.stringify({
-        code: err.code || err.status || 500,
+        name: err.name,
         message: err.message
       });
     }
