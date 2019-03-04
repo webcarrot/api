@@ -20,13 +20,25 @@ export const makeApi = <Data extends ApiData>({
       Object.keys(headers).forEach(key => fetchHeaders.set(key, headers[key]));
     }
   }
-  return (action, payload) =>
-    fetch(endpoint, {
-      method: "POST",
-      headers: fetchHeaders,
-      body: JSON.stringify({
-        action,
-        payload
-      })
-    }).then(r => r.json());
+  return (action, payload) => {
+    try {
+      const controller = new AbortController();
+      const signal = controller.signal;
+      const promise = fetch(endpoint, {
+        signal,
+        method: "POST",
+        headers: fetchHeaders,
+        body: JSON.stringify({
+          action,
+          payload
+        })
+      }).then(r => r.json());
+      Object.defineProperty(promise, "abort", {
+        value: () => controller.abort()
+      });
+      return promise;
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  };
 };
