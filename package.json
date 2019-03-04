@@ -6,7 +6,7 @@
   "browser": {
     "./browser.js": "./browser/browser.js",
     "./context.js": "./browser/context.js",
-    "./index.js": "./browser/index.js",
+    "./index.js": false,
     "./node.js": false
   },
   "repository": {
@@ -21,7 +21,7 @@
     "isomorphic"
   ],
   "scripts": {
-    "clean": "rm -rf *.js *.js.map *.d.ts browser",
+    "clean": "rm -rf *.js *.js.map browser.d.ts node.d.ts context.d.ts browser",
     "build": "npm run clean && tsc && tsc --build tsconfig.browser.json"
   },
   "author": {

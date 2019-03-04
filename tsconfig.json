@@ -11,7 +11,11 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "target": "es2017",
-    "lib": ["es7", "es2017", "dom"]
+    "lib": ["es7", "es2017", "dom"],
+    "paths": {
+      "@webcarrot/api": ["./index"],
+      "@webcarrot/api/*": ["./*"]
+    }
   },
   "exclude": ["./example/**/*"],
   "esModuleInterop": true,

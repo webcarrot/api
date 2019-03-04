@@ -5,11 +5,11 @@ import { ApiData, AppState } from "../types";
 import { App } from "../app";
 
 declare var APP_STATE: AppState;
-const appState = APP_STATE;
+const { api: apiConf, hi } = APP_STATE;
 
-const api = makeApi<ApiData>(appState.api);
+const api = makeApi<ApiData>(apiConf);
 
 ReactDOM.hydrate(
-  React.createElement(App, { api, hiFromServer: appState.hi }),
+  React.createElement(App, { api, hi }),
   document.getElementById("app")
 );

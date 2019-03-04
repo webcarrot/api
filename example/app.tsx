@@ -19,16 +19,10 @@ const IUseApi = ({ value = "" }) => {
   );
 };
 
-export const App = ({
-  api,
-  hiFromServer = ""
-}: {
-  api: ApiContextValue;
-  hiFromServer: string;
-}) => {
+export const App = ({ api, hi = "" }: { api: ApiContextValue; hi: string }) => {
   return (
     <ApiContext.Provider value={api}>
-      <IUseApi value={hiFromServer} />
+      <IUseApi value={hi} />
     </ApiContext.Provider>
   );
 };

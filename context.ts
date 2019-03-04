@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ApiResolver, ApiData } from "./index";
+import { ApiResolver, ApiData } from "@webcarrot/api";
 
 const defaultValue = () => Promise.reject();
 

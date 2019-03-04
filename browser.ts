@@ -1,4 +1,4 @@
-import { ApiResolver, ApiData } from "./index";
+import { ApiResolver, ApiData } from "@webcarrot/api";
 
 export const makeApi = <Data extends ApiData>({
   endpoint,

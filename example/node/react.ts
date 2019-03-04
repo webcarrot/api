@@ -31,10 +31,14 @@ export const handler = async (context: KoaContext) => {
     <div id="app">${ReactDOM.renderToString(
       React.createElement(App, {
         api,
-        hiFromServer: hi
+        hi
       })
     )}</div>
-    <script>APP_STATE=${JSON.stringify(APP_STATE)};</script>
+    <script src="https://unpkg.com/react@16.8.3/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@16.8.3/umd/react-dom.production.min.js"></script>
+    <script>window.process={env:{NODE_ENV:"production"}};APP_STATE=${JSON.stringify(
+      APP_STATE
+    )};</script>
     <script src="/build/react.js" async defer></script>
   </body>
 </html>`;

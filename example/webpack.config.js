@@ -8,16 +8,20 @@ module.exports = {
   output: {
     path: join(__dirname, "./build"),
     filename: "./build/react.js",
-    publicPath: "/"
+    publicPath: "/build"
   },
   watch: false,
   mode: "production",
-  devtool: "none",
+  devtool: "inline-source-map",
+  externals: {
+    react: "React",
+    "react-dom": "ReactDOM"
+  },
   resolve: {
     extensions: [".ts", ".tsx", ".js"],
     plugins: [
       new TsConfigPathsPlugin({
-        tsconfig: join(__dirname + "./tsconfig.json"),
+        tsconfig: join(__dirname + "./tsconfig.webpack.json"),
         compiler: "typescript"
       })
     ]
@@ -37,6 +41,7 @@ module.exports = {
     ]
   },
   optimization: {
-    nodeEnv: "production"
+    nodeEnv: "production",
+    minimize: false
   }
 };

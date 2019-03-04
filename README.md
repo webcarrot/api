@@ -6,9 +6,75 @@ Tiny, isomorphic TypeScript framework to build "call action" APIs.
 
 `npm i @webcarrot/api`
 
+## General
+
+This library provides generic TypeScript interfaces plus simple implementations / helpers for node and browsers enviroment.
+
+```typescript
+// interfaces - the essence
+import { ApiResolver, ActionFunction } from "@webcarrot/api";
+// implementations / helpers
+import { makeApi as nodeMakeApi } from "@webcarrot/api/node";
+import { makeApi as browserMakeApi } from "@webcarrot/api/browser";
+
+type ActionContext = { context: string; zee: number };
+
+const action: ActionFunction<
+  { payload: string; foo: number },
+  { output: string; bar: number },
+  ActionContext
+> = async ({ payload, foo }, { context, zee }) => ({
+  output: `payload: ${payload} context: ${context}`,
+  bar: foo + zee
+});
+
+// Types are build from plain object like:
+const actions = {
+  actionName: action
+};
+
+type Api = ApiResolver<typeof actions>;
+
+// cusom implementation
+const someCustomApiProvider: Api = (actionName, actionPayload) => {
+  // call api function implementation
+};
+
+someCustomApiProvider("actionName", { payload: "c", foo: 1 }).then(
+  ({ output, bar }) => console.log({ output, bar })
+);
+
+// node helper usage
+const nodeApiProvider = nodeMakeApi<typeof actions, ActionContext>({
+  actions,
+  context: { context: "z", zee: 4 }
+});
+
+nodeApiProvider("actionName", { payload: "n", foo: 2 }).then(
+  ({ output, bar }) => console.log({ output, bar })
+);
+
+// browser helper usage
+const browserApiProvider = browserMakeApi<typeof actions>({
+  endpoint: "/api",
+  headers: {
+    "X-Foo": "Bar"
+  }
+});
+
+browserApiProvider("actionName", { payload: "b", foo: 3 }).then(
+  ({ output, bar }) => console.log({ output, bar })
+);
+```
+
+## TODO
+
+- Allow to define an optional payload.
+- Firebase helper.
+
 ## Example code
 
-See [example](https://github.com/webcarrot/api/tree/master/example)
+See [example code](https://github.com/webcarrot/api/tree/master/example)
 
 Anyway same code:
 
@@ -34,7 +100,7 @@ export type AppState = {
 
 ### Node only side
 
-#### Hi action (`example/api/hi.ts`):
+#### Hi action (`example/api/hi.ts`)
 
 ```typescript
 import { Context as KoaContext } from "koa";
@@ -151,7 +217,7 @@ const api = makeApi<ApiData>({
 
 ### React
 
-#### Make context (`example/apiContext.ts`);
+#### Make context (`example/apiContext.ts`)
 
 ```typescript
 import { makeContext } from "@webcarrot/api/context";
@@ -160,7 +226,7 @@ import { ApiData } from "./types";
 export const Context = makeContext<ApiData>();
 ```
 
-#### App (`example/app.tsx`)
+#### React main "App" Component (`example/app.tsx`)
 
 ```typescript
 import * as React from "react";
@@ -184,24 +250,16 @@ const IUseApi = ({ value = "" }) => {
   );
 };
 
-export const App = ({
-  api,
-  hiFromServer = ""
-}: {
-  api: ApiContextValue;
-  hiFromServer: string;
-}) => {
+export const App = ({ api, hi = "" }: { api: ApiContextValue; hi: string }) => {
   return (
     <ApiContext.Provider value={api}>
-      <IUseApi value={hiFromServer} />
+      <IUseApi value={hi} />
     </ApiContext.Provider>
   );
 };
 ```
 
-#### Server side
-
-Render react app on server (`example/node/react.ts`)
+#### Render react app on server (`example/node/react.ts`)
 
 ```typescript
 import * as React from "react";
@@ -237,19 +295,21 @@ export const handler = async (context: KoaContext) => {
     <div id="app">${ReactDOM.renderToString(
       React.createElement(App, {
         api,
-        hiFromServer: hi
+        hi
       })
     )}</div>
-    <script>APP_STATE=${JSON.stringify(APP_STATE)};</script>
+    <script src="https://unpkg.com/react@16.8.3/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@16.8.3/umd/react-dom.production.min.js"></script>
+    <script>window.process={env:{NODE_ENV:"production"}};APP_STATE=${JSON.stringify(
+      APP_STATE
+    )};</script>
     <script src="/build/react.js" async defer></script>
   </body>
 </html>`;
 };
 ```
 
-#### Browser side
-
-Render react app in browser (`example/browser/react.ts`)
+#### Render react app in browser (`example/browser/react.ts`)
 
 ```typescript
 import * as React from "react";
@@ -259,12 +319,12 @@ import { ApiData, AppState } from "../types";
 import { App } from "../app";
 
 declare var APP_STATE: AppState;
-const appState = APP_STATE;
+const { api: apiConf, hi } = APP_STATE;
 
-const api = makeApi<ApiData>(appState.api);
+const api = makeApi<ApiData>(apiConf);
 
 ReactDOM.hydrate(
-  React.createElement(App, { api, hiFromServer: appState.hi }),
+  React.createElement(App, { api, hi }),
   document.getElementById("app")
 );
 ```
