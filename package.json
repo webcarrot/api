@@ -1,7 +1,7 @@
 {
   "public": true,
   "name": "@webcarrot/api",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Framework that provide minimal API support",
   "browser": {
     "./browser.js": "./browser/browser.js",
