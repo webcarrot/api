@@ -24,8 +24,9 @@ export const makeApi = <Data extends ApiData>({
   return (action, payload) => {
     try {
       let aborted = false;
-      const controller = new AbortController();
-      const signal = controller.signal;
+      const controller =
+        typeof AbortController !== undefined ? new AbortController() : null;
+      const signal = controller ? controller.signal : undefined;
       const promise = fetch(endpoint, {
         signal,
         method: "POST",
@@ -51,8 +52,12 @@ export const makeApi = <Data extends ApiData>({
       );
       Object.defineProperty(promise, "abort", {
         value: () => {
-          aborted = true;
-          controller.abort();
+          if (!aborted) {
+            aborted = true;
+            if (controller) {
+              controller.abort();
+            }
+          }
         }
       });
       return promise;
