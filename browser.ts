@@ -25,7 +25,7 @@ export const makeApi = <Data extends ApiData>({
     try {
       let aborted = false;
       const controller =
-        typeof AbortController !== undefined ? new AbortController() : null;
+        typeof AbortController !== "undefined" ? new AbortController() : null;
       const signal = controller ? controller.signal : undefined;
       const promise = fetch(endpoint, {
         signal,
