@@ -3,12 +3,8 @@
   "name": "@webcarrot/api",
   "version": "1.2.0",
   "description": "Framework that provide minimal API support",
-  "browser": {
-    "./browser.js": "./browser/browser.js",
-    "./context.js": "./browser/context.js",
-    "./index.js": false,
-    "./node.js": false
-  },
+  "main": "./dist/cjs/index.js",
+  "browser": "./dist/cjs/browser.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/webcarrot/api.git"
@@ -21,8 +17,9 @@
     "isomorphic"
   ],
   "scripts": {
-    "clean": "rm -rf *.js *.js.map browser.d.ts node.d.ts errors.d.ts context.d.ts browser",
-    "build": "npm run clean && tsc && tsc --build tsconfig.browser.json"
+    "clean": "rm -rf ./dist/*",
+    "build": "npm run clean && tsc && copy-declaration-ts ./src ./dist",
+    "test": "tsc --noEmit"
   },
   "author": {
     "email": "admin@webcarrot.pl",
@@ -37,7 +34,9 @@
     "registry": "https://registry.npmjs.org"
   },
   "devDependencies": {
-    "@types/react": "^16.8.5",
-    "csstype": "^2.6.2"
+    "@types/react": "^16.9.2",
+    "@webcarrot/copy-declaration-ts": "^1.0.0",
+    "csstype": "^2.6.6",
+    "typescript": "^3.5.3"
   }
 }

@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "baseUrl": ".",
-    "outDir": "./",
+    "outDir": "./dist",
     "sourceMap": true,
     "declaration": true,
     "noImplicitAny": true,
@@ -13,8 +13,8 @@
     "target": "es2017",
     "lib": ["es7", "es2017", "dom"],
     "paths": {
-      "@webcarrot/api": ["./index"],
-      "@webcarrot/api/*": ["./*"]
+      "@webcarrot/api": ["./src/index"],
+      "@webcarrot/api/*": ["./src/*"]
     }
   },
   "exclude": ["./example/**/*"],

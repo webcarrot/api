@@ -1,9 +1,0 @@
-{
-  "extends": "./tsconfig",
-  "compilerOptions": {
-    "baseUrl": ".",
-    "outDir": "./browser",
-    "target": "es5"
-  },
-  "exclude": ["./node.ts", "./example/**/*"]
-}

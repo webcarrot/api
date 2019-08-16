@@ -5,7 +5,7 @@ import {
   PromiseA,
   Unpacked,
   Output
-} from "@webcarrot/api";
+} from "./types";
 
 import { makeAbortError, makeError } from "./errors";
 
@@ -25,14 +25,15 @@ export const makeApi = <Data extends ApiData, Context>({
       reject(makeAbortError(action));
     } else if (action in actions) {
       actions[action](payload, context).then(
-        data => {
+        (data: Unpacked<Output<Data[N]>>) => {
           if (!aborted) {
             resolve(data);
           } else {
             reject(makeAbortError(action));
           }
         },
-        err => reject(aborted ? makeAbortError(action) : makeError(err, action))
+        (err: any) =>
+          reject(aborted ? makeAbortError(action) : makeError(err, action))
       );
     } else {
       reject(

@@ -1,4 +1,4 @@
-import { ApiResolver, ApiData } from "./";
+import { ApiResolver, ApiData } from "./types";
 import { makeAbortError, makeError } from "./errors";
 
 interface FirebaseFunctions {

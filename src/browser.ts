@@ -1,4 +1,4 @@
-import { ApiResolver, ApiData } from "@webcarrot/api";
+import { ApiResolver, ApiData } from "./types";
 import { makeAbortError, makeError } from "./errors";
 
 export const makeApi = <Data extends ApiData>({

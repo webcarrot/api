@@ -5,7 +5,10 @@ export const makeAbortError = (action: string | number | Symbol) => {
 };
 
 export const makeError = (data: any, action: string | number | Symbol) => {
-  const error = new Error((data && data.message) || `Action "${action}" error`);
-  error.name = (data && data.name) || "ActionError";
+  const error = new Error(`Action "${action}" error`);
+  error.name = "ActionError";
+  if (data && data instanceof Object) {
+    Object.assign(error, data);
+  }
   return error;
 };
