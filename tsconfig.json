@@ -17,6 +17,7 @@
       "@webcarrot/api/*": ["./src/*"]
     }
   },
+  "include": ["./src/**/*"],
   "exclude": ["./example/**/*"],
   "esModuleInterop": true,
   "allowSyntheticDefaultImports": true

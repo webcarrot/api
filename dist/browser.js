@@ -41,7 +41,12 @@ exports.makeApi = ({ endpoint, headers }) => {
                     throw errors_1.makeError(data, action);
                 }
             }), err => {
-                throw errors_1.makeError(err, action);
+                if (err.code === 20) {
+                    throw errors_1.makeAbortError(action);
+                }
+                else {
+                    throw errors_1.makeError(err, action);
+                }
             });
             Object.defineProperty(promise, "abort", {
                 value: () => {

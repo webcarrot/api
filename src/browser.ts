@@ -47,7 +47,11 @@ export const makeApi = <Data extends ApiData>({
             }
           }),
         err => {
-          throw makeError(err, action);
+          if (err.code === 20) {
+            throw makeAbortError(action);
+          } else {
+            throw makeError(err, action);
+          }
         }
       );
       Object.defineProperty(promise, "abort", {
