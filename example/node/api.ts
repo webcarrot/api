@@ -19,13 +19,37 @@ export const handler = async (
         context
       });
       const {
+        batch,
         action,
         payload
       }: {
+        batch: any;
         action: any;
         payload: any;
       } = (await BodyParse.json(context)) || {};
-      const data = await api(action, payload);
+      let data;
+      if (batch) {
+        data = await Promise.all(
+          batch.map(async ({ action, payload }: any) => {
+            try {
+              return {
+                ok: true,
+                value: await api(action, payload)
+              };
+            } catch (err) {
+              return {
+                ok: false,
+                value: {
+                  name: err.name,
+                  message: err.message
+                }
+              };
+            }
+          })
+        );
+      } else {
+        data = await api(action, payload);
+      }
       context.type = "json";
       context.status = 200;
       context.body = JSON.stringify(data);

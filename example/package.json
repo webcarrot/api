@@ -13,20 +13,20 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@webcarrot/api": "^1.1.4",
+    "@webcarrot/api": "^1.5.0",
     "co-body": "^6.0.0",
-    "koa": "^2.7.0",
-    "react": "^16.8.3",
-    "react-dom": "^16.8.3"
+    "koa": "^2.11.0",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0"
   },
   "devDependencies": {
     "@types/co-body": "0.0.3",
-    "@types/koa": "^2.0.48",
-    "@types/react": "^16.8.6",
-    "@types/react-dom": "^16.8.2",
+    "@types/koa": "^2.11.0",
+    "@types/react": "^16.9.19",
+    "@types/react-dom": "^16.9.5",
     "awesome-typescript-loader": "^5.2.1",
-    "csstype": "^2.6.2",
-    "webpack": "^4.29.6",
-    "webpack-cli": "^3.2.3"
+    "typescript": "^3.7.5",
+    "webpack": "^4.41.5",
+    "webpack-cli": "^3.3.10"
   }
 }
