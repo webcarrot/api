@@ -60,7 +60,10 @@ exports.makeApi = ({ endpoint, headers, batchTimeout = 5 }) => {
                     method: "POST",
                     headers: fetchHeaders,
                     body: JSON.stringify({
-                        batch: batchJobsToDo
+                        batch: batchJobsToDo.map(({ action, payload }) => ({
+                            action,
+                            payload
+                        }))
                     })
                 }).then(r => r.json().then(data => {
                     if (r.ok) {
