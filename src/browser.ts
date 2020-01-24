@@ -5,8 +5,8 @@ const makeJobPromise = () => {
   let resolve: (data: any) => void;
   let reject: (error: any) => void;
   const promise = new Promise<any>((onSuccess, onError) => {
-    reject = onSuccess;
-    resolve = onError;
+    resolve = onSuccess;
+    reject = onError;
   });
   const onSuccess = (data: any) => {
     if (resolve) {
