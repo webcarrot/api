@@ -16,8 +16,9 @@
     "isomorphic"
   ],
   "scripts": {
-    "clean": "rm -rf ./dist/*",
-    "build": "npm run clean && tsc && copy-declaration-ts ./src ./dist",
+    "build": "rimraf ./*.js && rimraf ./*.js.map && tsc",
+    "prepack": "npm run build",
+    "postpack": "rimraf rimraf ./*.js && rimraf ./*.js.map",
     "test": "tsc --noEmit"
   },
   "author": {
@@ -33,8 +34,8 @@
     "registry": "https://registry.npmjs.org"
   },
   "devDependencies": {
-    "@types/react": "^16.9.19",
-    "@webcarrot/copy-declaration-ts": "^1.0.0",
+    "@types/react": "^16.9.20",
+    "rimraf": "^3.0.2",
     "typescript": "^3.7.5"
   }
 }

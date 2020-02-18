@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
     "baseUrl": ".",
-    "outDir": "./dist",
+    "outDir": "./",
     "sourceMap": true,
-    "declaration": true,
+    "declaration": false,
     "noImplicitAny": true,
     "removeComments": true,
     "noUnusedLocals": true,
