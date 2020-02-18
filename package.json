@@ -3,7 +3,7 @@
   "name": "@webcarrot/api",
   "version": "1.6.0",
   "description": "Framework that provide minimal API support",
-  "main": "./dist/index.js",
+  "main": "./index.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/webcarrot/api.git"

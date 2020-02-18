@@ -10,15 +10,11 @@
     "noUnusedParameters": true,
     "module": "commonjs",
     "moduleResolution": "node",
-    "target": "es2017",
-    "lib": ["es7", "es2017", "dom"],
-    "paths": {
-      "@webcarrot/api": ["./src/index"],
-      "@webcarrot/api/*": ["./src/*"]
-    }
+    "target": "es2018",
+    "lib": ["es7", "es2017", "dom"]
   },
-  "include": ["./src/**/*"],
-  "exclude": ["./example/**/*"],
+  "include": ["./*.ts"],
+  "exclude": ["./*.js"],
   "esModuleInterop": true,
   "allowSyntheticDefaultImports": true
 }
