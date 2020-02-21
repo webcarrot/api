@@ -129,7 +129,7 @@ export const makeApi = <Data extends ApiData>({
     };
     batchJobs.push(job);
     if (!batchTimeoutValue) {
-      batchTimeoutValue = setTimeout(executeBatch, batchTimeout);
+      batchTimeoutValue = setTimeout(executeBatch, batchTimeout) as any;
     }
     Object.defineProperty(promise, "abort", {
       value: () => {
