@@ -4,14 +4,14 @@ import {
   Payload,
   PromiseA,
   Unpacked,
-  Output
+  Output,
 } from "./types";
 
 import { makeAbortError, makeError } from "./errors";
 
 export const makeApi = <Data extends ApiData, Context>({
   actions,
-  context
+  context,
 }: {
   actions: Data;
   context: Context;
@@ -23,24 +23,41 @@ export const makeApi = <Data extends ApiData, Context>({
   const promise = new Promise<Unpacked<Output<Data[N]>>>((resolve, reject) => {
     if (aborted) {
       reject(makeAbortError(action));
-    } else if (action in actions) {
-      actions[action](payload, context).then(
-        (data: Unpacked<Output<Data[N]>>) => {
+    } else if (
+      action in actions &&
+      actions.hasOwnProperty(action) &&
+      typeof actions[action] === "function"
+    ) {
+      try {
+        const output = actions[action](payload, context);
+        if (output instanceof Promise) {
+          output.then(
+            (data: Unpacked<Output<Data[N]>>) => {
+              if (!aborted) {
+                resolve(data);
+              } else {
+                reject(makeAbortError(action));
+              }
+            },
+            (err: any) =>
+              reject(aborted ? makeAbortError(action) : makeError(err, action))
+          );
+        } else {
           if (!aborted) {
-            resolve(data);
+            resolve(output);
           } else {
             reject(makeAbortError(action));
           }
-        },
-        (err: any) =>
-          reject(aborted ? makeAbortError(action) : makeError(err, action))
-      );
+        }
+      } catch (err) {
+        reject(aborted ? makeAbortError(action) : makeError(err, action));
+      }
     } else {
       reject(
         makeError(
           {
             message: `Unknown action "${action}"`,
-            name: "ActionUnknown"
+            name: "ActionUnknown",
           },
           action
         )
@@ -50,7 +67,7 @@ export const makeApi = <Data extends ApiData, Context>({
   Object.defineProperty(promise, "abort", {
     value: () => {
       aborted = true;
-    }
+    },
   });
   return promise;
 };
