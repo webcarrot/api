@@ -1,5 +1,5 @@
 import { ApiResolver, ApiData, BatchJobs, AddJob } from "./types";
-import { makeAbortError, makeError } from "./errors";
+import { makeAbortError, makeError, makeInvalidResponseError } from "./errors";
 
 const makeJobPromise = () => {
   let resolve: (data: any) => void;
@@ -28,7 +28,7 @@ const makeJobPromise = () => {
 export const makeApi = <Data extends ApiData>({
   endpoint,
   headers,
-  batchTimeout = 5
+  batchTimeout = 5,
 }: {
   endpoint: string;
   headers?: HeadersInit;
@@ -36,7 +36,7 @@ export const makeApi = <Data extends ApiData>({
 }): ApiResolver<Data> => {
   const fetchHeaders: Headers = new Headers({
     Accept: "application/json",
-    "Content-Type": "application/json"
+    "Content-Type": "application/json",
   });
 
   if (headers) {
@@ -45,7 +45,9 @@ export const makeApi = <Data extends ApiData>({
     } else if (headers instanceof Array) {
       headers.forEach(([key, value]) => fetchHeaders.set(key, value));
     } else if (headers instanceof Object) {
-      Object.keys(headers).forEach(key => fetchHeaders.set(key, headers[key]));
+      Object.keys(headers).forEach((key) =>
+        fetchHeaders.set(key, headers[key])
+      );
     }
   }
 
@@ -59,7 +61,7 @@ export const makeApi = <Data extends ApiData>({
     const batchJobsAborted = batchJobs.filter(({ aborted }) => aborted);
     batchJobs = [];
     if (batchJobsAborted.length) {
-      batchJobsAborted.forEach(job => {
+      batchJobsAborted.forEach((job) => {
         job.onError(makeAbortError(job.action));
       });
     }
@@ -71,37 +73,48 @@ export const makeApi = <Data extends ApiData>({
           body: JSON.stringify({
             batch: batchJobsToDo.map(({ action, payload }) => ({
               action,
-              payload
-            }))
-          })
+              payload,
+            })),
+          }),
         }).then(
-          r =>
-            r.json().then(data => {
-              if (r.ok) {
-                batchJobsToDo.forEach((job, no) => {
-                  if (job.aborted) {
-                    job.onError(makeAbortError(job.action));
-                  } else {
-                    const { value, ok } = data[no];
-                    if (ok) {
-                      job.onSuccess(value);
+          (r) =>
+            r.json().then(
+              (data) => {
+                if (r.ok) {
+                  batchJobsToDo.forEach((job, no) => {
+                    if (job.aborted) {
+                      job.onError(makeAbortError(job.action));
                     } else {
-                      job.onError(makeError(value, job.action));
+                      const { value, ok } = data[no];
+                      if (ok) {
+                        job.onSuccess(value);
+                      } else {
+                        job.onError(makeError(value, job.action));
+                      }
                     }
-                  }
-                });
-              } else {
-                batchJobsToDo.forEach(job => {
+                  });
+                } else {
+                  batchJobsToDo.forEach((job) => {
+                    if (job.aborted) {
+                      job.onError(makeAbortError(job.action));
+                    } else {
+                      job.onError(makeError(data, job.action));
+                    }
+                  });
+                }
+              },
+              () => {
+                batchJobsToDo.forEach((job) => {
                   if (job.aborted) {
                     job.onError(makeAbortError(job.action));
                   } else {
-                    job.onError(makeError(data, job.action));
+                    job.onError(makeInvalidResponseError(job.action));
                   }
                 });
               }
-            }),
-          err => {
-            batchJobsToDo.forEach(job => {
+            ),
+          (err) => {
+            batchJobsToDo.forEach((job) => {
               if (job.aborted) {
                 job.onError(makeAbortError(job.action));
               } else {
@@ -111,7 +124,7 @@ export const makeApi = <Data extends ApiData>({
           }
         );
       } catch (err) {
-        batchJobsToDo.forEach(job => {
+        batchJobsToDo.forEach((job) => {
           job.onError(makeError(err, job.action));
         });
       }
@@ -125,7 +138,7 @@ export const makeApi = <Data extends ApiData>({
       payload,
       aborted: false,
       onError,
-      onSuccess
+      onSuccess,
     };
     batchJobs.push(job);
     if (!batchTimeoutValue) {
@@ -136,7 +149,7 @@ export const makeApi = <Data extends ApiData>({
         if (!job.aborted) {
           job.aborted = true;
         }
-      }
+      },
     });
     return promise;
   };
@@ -156,20 +169,29 @@ export const makeApi = <Data extends ApiData>({
           headers: fetchHeaders,
           body: JSON.stringify({
             action,
-            payload
-          })
+            payload,
+          }),
         }).then(
-          r =>
-            r.json().then(data => {
-              if (aborted) {
-                throw makeAbortError(action);
-              } else if (r.ok) {
-                return data;
-              } else {
-                throw makeError(data, action);
+          (r) =>
+            r.json().then(
+              (data) => {
+                if (aborted) {
+                  throw makeAbortError(action);
+                } else if (r.ok) {
+                  return data;
+                } else {
+                  throw makeError(data, action);
+                }
+              },
+              () => {
+                if (aborted) {
+                  throw makeAbortError(action);
+                } else {
+                  throw makeInvalidResponseError(action);
+                }
               }
-            }),
-          err => {
+            ),
+          (err) => {
             if (err.code === 20) {
               throw makeAbortError(action);
             } else {
@@ -185,7 +207,7 @@ export const makeApi = <Data extends ApiData>({
                 controller.abort();
               }
             }
-          }
+          },
         });
         return promise;
       } catch (err) {

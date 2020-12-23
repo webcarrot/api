@@ -12,3 +12,11 @@ export const makeError = (data: any, action: string | number | Symbol) => {
   }
   return error;
 };
+
+export const makeInvalidResponseError = (action: string | number | Symbol) => {
+  const error = new Error(
+    `Action "${action}" error due to invalid JSON in response`
+  );
+  error.name = "ActionError";
+  return error;
+};
