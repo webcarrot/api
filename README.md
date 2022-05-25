@@ -25,12 +25,12 @@ const action: ActionFunction<
   ActionContext
 > = async ({ payload, foo }, { context, zee }) => ({
   output: `payload: ${payload} context: ${context}`,
-  bar: foo + zee
+  bar: foo + zee,
 });
 
 // Types are build from plain object like:
 const actions = {
-  actionName: action
+  actionName: action,
 };
 
 type Api = ApiResolver<typeof actions>;
@@ -47,7 +47,7 @@ someCustomApiProvider("actionName", { payload: "c", foo: 1 }).then(
 // node helper usage
 const nodeApiProvider = nodeMakeApi<typeof actions, ActionContext>({
   actions,
-  context: { context: "z", zee: 4 }
+  context: { context: "z", zee: 4 },
 });
 
 nodeApiProvider("actionName", { payload: "n", foo: 2 }).then(
@@ -58,8 +58,8 @@ nodeApiProvider("actionName", { payload: "n", foo: 2 }).then(
 const browserApiProvider = browserMakeApi<typeof actions>({
   endpoint: "/api",
   headers: {
-    "X-Foo": "Bar"
-  }
+    "X-Foo": "Bar",
+  },
 });
 
 browserApiProvider("actionName", { payload: "b", foo: 3 }).then(
@@ -111,7 +111,7 @@ export const action: ActionFunction<
   { hi: string },
   KoaContext
 > = async ({ who }, ctx) => ({
-  hi: `Hi ${who} from ip: ${ctx.ip}, date: ${new Date().toLocaleString()}`
+  hi: `Hi ${who} from ip: ${ctx.ip}, date: ${new Date().toLocaleString()}`,
 });
 ```
 
@@ -121,7 +121,7 @@ export const action: ActionFunction<
 import { action as hi } from "./hi";
 
 export const actions = {
-  "say.hi": hi
+  "say.hi": hi,
 };
 ```
 
@@ -140,7 +140,7 @@ export const handler = async (
   if (context.path === "/plain") {
     const api = makeApi<ApiData, KoaContext>({
       actions,
-      context
+      context,
     });
     context.body = (await api("say.hi", { who: "plain-node" })).hi;
   } else {
@@ -170,11 +170,11 @@ export const handler = async (
       }
       const api = makeApi<ApiData, KoaContext>({
         actions,
-        context
+        context,
       });
       const {
         action,
-        payload
+        payload,
       }: {
         action: any;
         payload: any;
@@ -188,7 +188,7 @@ export const handler = async (
       context.status = err.status || 500;
       context.body = JSON.stringify({
         name: err.name,
-        message: err.message
+        message: err.message,
       });
     }
   } else {
@@ -208,8 +208,8 @@ import { ApiData } from "../types";
 const api = makeApi<ApiData>({
   endpoint: "/api",
   headers: {
-    "X-Secret-Foo": "Bar"
-  }
+    "X-Secret-Foo": "Bar",
+  },
 });
 
 (async () => console.log((await api("say.hi", { who: "plain-browser" })).hi))();
@@ -261,21 +261,21 @@ const IUseApi = ({ value }: { value: string }) => {
           return {
             hi: action.value,
             error: null,
-            call: 0
+            call: 0,
           };
         }
         case "call": {
           return {
             ...state,
             error: null,
-            call: Date.now()
+            call: Date.now(),
           };
         }
         case "error": {
           return {
             ...state,
             call: 0,
-            error: action.value
+            error: action.value,
           };
         }
       }
@@ -283,7 +283,7 @@ const IUseApi = ({ value }: { value: string }) => {
     {
       hi: value,
       call: 0,
-      error: null
+      error: null,
     }
   );
   React.useEffect(() => {
@@ -291,7 +291,7 @@ const IUseApi = ({ value }: { value: string }) => {
       const request = api("say.hi", { who: "react-browser" });
       request.then(
         ({ hi }) => dispatch({ type: "hi", value: hi }),
-        err => {
+        (err) => {
           // handle only real errors
           if (err.name !== "AbortError") {
             dispatch({ type: "error", value: err.message });
@@ -351,17 +351,17 @@ import { ApiData, AppState } from "../types";
 export const handler = async (context: KoaContext) => {
   const api = makeApi<ApiData, KoaContext>({
     actions,
-    context
+    context,
   });
   const hi = (await api("say.hi", { who: "react-node" })).hi;
   const APP_STATE: AppState = {
     api: {
       endpoint: "/api",
       headers: {
-        "X-Secret-Foo": "Bar"
-      }
+        "X-Secret-Foo": "Bar",
+      },
     },
-    hi
+    hi,
   };
   context.body = `<!doctype html>
 <html>
@@ -372,7 +372,7 @@ export const handler = async (context: KoaContext) => {
     <div id="app">${ReactDOM.renderToString(
       React.createElement(App, {
         api,
-        hi
+        hi,
       })
     )}</div>
     <script src="https://unpkg.com/react@16.8.3/umd/react.production.min.js"></script>
