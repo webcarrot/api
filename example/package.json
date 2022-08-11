@@ -17,8 +17,8 @@
     "@webcarrot/api": "^1.8.1",
     "co-body": "^6.1.0",
     "koa": "^2.13.4",
-    "react": "^18.1.0",
-    "react-dom": "^18.1.0"
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
     "@types/co-body": "6.1.0",
