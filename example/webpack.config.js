@@ -1,6 +1,5 @@
 const { join } = require("path");
-
-const { TsConfigPathsPlugin } = require("awesome-typescript-loader");
+const { TsconfigPathsPlugin } = require("tsconfig-paths-webpack-plugin");
 const { DefinePlugin } = require("webpack");
 
 module.exports = {
@@ -8,40 +7,39 @@ module.exports = {
   output: {
     path: join(__dirname, "./build"),
     filename: "./build/react.js",
-    publicPath: "/build"
+    publicPath: "/build",
   },
   watch: false,
   mode: "production",
   devtool: "inline-source-map",
   externals: {
     react: "React",
-    "react-dom": "ReactDOM"
+    "react-dom": "ReactDOM",
   },
   resolve: {
     extensions: [".ts", ".tsx", ".js"],
     plugins: [
-      new TsConfigPathsPlugin({
-        tsconfig: join(__dirname + "./tsconfig.webpack.json"),
-        compiler: "typescript"
-      })
-    ]
+      new TsconfigPathsPlugin({
+        configFile: join(__dirname, "./tsconfig.webpack.json"),
+      }),
+    ],
   },
   plugins: [
     new DefinePlugin({
       NODE_ENV: JSON.stringify("production"),
-      "process.env.NODE_ENV": JSON.stringify("production")
-    })
+      "process.env.NODE_ENV": JSON.stringify("production"),
+    }),
   ],
   module: {
     rules: [
       {
         test: /\.tsx?$/,
-        loader: "awesome-typescript-loader"
-      }
-    ]
+        loader: "ts-loader",
+      },
+    ],
   },
   optimization: {
     nodeEnv: "production",
-    minimize: false
-  }
+    minimize: false,
+  },
 };

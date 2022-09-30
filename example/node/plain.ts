@@ -10,7 +10,7 @@ export const handler = async (
   if (context.path === "/plain") {
     const api = makeApi<ApiData, KoaContext>({
       actions,
-      context
+      context,
     });
     context.body = (await api("say.hi", { who: "plain-node" })).hi;
   } else {

@@ -1,31 +1,35 @@
-import { ApiResolver, ApiData, BatchJobs, AddJob } from "./types";
-import { makeAbortError, makeError, makeInvalidResponseError } from "./errors";
+import type { ApiResolver, ApiData, BatchJobs, AddJob } from "./types";
+import {
+  makeAbortError,
+  makeError,
+  makeInvalidResponseError,
+} from "./errors.js";
 
-const makeJobPromise = () => {
+function makeJobPromise() {
   let resolve: (data: any) => void;
   let reject: (error: any) => void;
   const promise = new Promise<any>((onSuccess, onError) => {
     resolve = onSuccess;
     reject = onError;
   });
-  const onSuccess = (data: any) => {
+  function onSuccess(data: any) {
     if (resolve) {
       resolve(data);
     } else {
       setTimeout(() => resolve(data), 1);
     }
-  };
-  const onError = (error: any) => {
+  }
+  function onError(error: any) {
     if (reject) {
       reject(error);
     } else {
       setTimeout(() => reject(error), 1);
     }
-  };
+  }
   return { promise, onSuccess, onError };
-};
+}
 
-export const makeApi = <Data extends ApiData>({
+export function makeApi<Data extends ApiData>({
   endpoint,
   headers,
   batchTimeout = 5,
@@ -33,7 +37,7 @@ export const makeApi = <Data extends ApiData>({
   endpoint: string;
   headers?: HeadersInit;
   batchTimeout?: number;
-}): ApiResolver<Data> => {
+}): ApiResolver<Data> {
   const fetchHeaders: Headers = new Headers({
     Accept: "application/json",
     "Content-Type": "application/json",
@@ -53,7 +57,7 @@ export const makeApi = <Data extends ApiData>({
 
   let batchJobs: BatchJobs<Data, keyof Data> = [];
 
-  let batchTimeoutValue: number = null;
+  let batchTimeoutValue: number | null = null;
 
   const executeBatch = () => {
     batchTimeoutValue = null;
@@ -215,4 +219,4 @@ export const makeApi = <Data extends ApiData>({
       }
     }
   };
-};
+}
