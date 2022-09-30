@@ -1,4 +1,4 @@
-import {
+import type {
   ApiResolver,
   ApiData,
   Payload,
@@ -7,20 +7,19 @@ import {
   Output,
 } from "./types";
 
-import { makeAbortError, makeError } from "./errors";
+import { makeAbortError, makeError } from "./errors.js";
 
-export const makeApi =
-  <Data extends ApiData, Context>({
-    actions,
-    context,
-  }: {
-    actions: Data;
-    context: Context;
-  }): ApiResolver<Data> =>
-  <N extends keyof Data>(
+export function makeApi<Data extends ApiData, Context>({
+  actions,
+  context,
+}: {
+  actions: Data;
+  context: Context;
+}): ApiResolver<Data> {
+  return function <N extends keyof Data>(
     action: N,
     payload: Payload<Data[N]>
-  ): PromiseA<Unpacked<Output<Data[N]>>> => {
+  ): PromiseA<Unpacked<Output<Data[N]>>> {
     let aborted = false;
     const promise = new Promise<Unpacked<Output<Data[N]>>>(
       (resolve, reject) => {
@@ -77,3 +76,4 @@ export const makeApi =
     });
     return promise;
   };
+}

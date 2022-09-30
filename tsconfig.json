@@ -1,8 +1,6 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
-    "outDir": "./",
-    "sourceMap": true,
+    "sourceMap": false,
     "declaration": false,
     "noImplicitAny": true,
     "removeComments": true,
@@ -13,8 +11,7 @@
     "target": "es2018",
     "lib": ["es7", "es2017", "dom"]
   },
-  "include": ["./*.ts"],
-  "exclude": ["./*.js"],
+  "include": ["./src/*"],
   "esModuleInterop": true,
   "allowSyntheticDefaultImports": true
 }
