@@ -1,0 +1,96 @@
+{
+  "public": true,
+  "name": "@webcarrot/api",
+  "version": "3.0.0",
+  "description": "Framework that provide minimal API support",
+  "main": "./dist/cjs/index.js",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js"
+    },
+    "./browser": {
+      "import": "./dist/esm/browser.js",
+      "require": "./dist/cjs/browser.js"
+    },
+    "./context": {
+      "import": "./dist/esm/context.js",
+      "require": "./dist/cjs/context.js"
+    },
+    "./errors": {
+      "import": "./dist/esm/errors.js",
+      "require": "./dist/cjs/errors.js"
+    },
+    "./node": {
+      "import": "./dist/esm/node.js",
+      "require": "./dist/cjs/node.js"
+    },
+    "./types": {
+      "import": "./dist/esm/types.js",
+      "require": "./dist/cjs/types.js"
+    }
+  },
+  "types": "./dist/esm/index.d.ts",
+  "typesVersions": {
+    "*": {
+      "browser": [
+        "./dist/esm/browser.d.ts"
+      ],
+      "context": [
+        "./dist/esm/context.d.ts"
+      ],
+      "errors": [
+        "./dist/esm/errors.d.ts"
+      ],
+      "node": [
+        "./dist/esm/node.d.ts"
+      ],
+      "types": [
+        "./dist/esm/types.d.ts"
+      ]
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/webcarrot/api.git"
+  },
+  "keywords": [
+    "api",
+    "typescript",
+    "microframework",
+    "react",
+    "isomorphic"
+  ],
+  "scripts": {
+    "prepack": "rm -rf ./dist && tsc -p ./ -m es2022 -d --outDir ./dist/esm && tsc -p ./ -m commonjs --outDir ./dist/cjs && echo '{\"type\":\"commonjs\"}' > ./dist/cjs/package.json",
+    "postpack": "rm -rf ./dist",
+    "test": "tsc --noEmit && eslint",
+    "format": "prettier . --write --log-level warn"
+  },
+  "author": {
+    "email": "wojciech.wierchola@doctrin.se",
+    "name": "Wojciech Wierchola"
+  },
+  "bugs": {
+    "url": "https://github.com/webcarrot/api/issues"
+  },
+  "homepage": "https://github.com/webcarrot/api#readme",
+  "devDependencies": {
+    "@types/react": "18.3.18",
+    "@typescript-eslint/eslint-plugin": "8.23.0",
+    "@typescript-eslint/parser": "8.23.0",
+    "eslint": "9.20.0",
+    "prettier": "3.5.0",
+    "typescript": "5.7.3",
+    "typescript-eslint": "8.23.0"
+  },
+  "peerDependencies": {
+    "react": "*"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "prettier": {}
+}
